@@ -1,0 +1,9 @@
+# Ignore large dataset and vector binary matrix assets
+data/cmu_books_cleaned.csv
+embeddings/sbert_embeddings.npy
+
+# Ignore python cache files
+__pycache__/
+.pytest_cache/
+*.pyc
+.streamlit/
