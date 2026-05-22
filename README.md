@@ -6,4 +6,8 @@
    👉 **https://drive.google.com/drive/folders/1GISfA9h0ODeWYvAFtPi5R3oMFclrHXKv?usp=sharing**
 3. Create a `data/` folder in the root directory and drop `cmu_books_cleaned.csv` inside it.
 4. Create an `embeddings/` folder in the root directory and drop `sbert_embeddings.npy` inside it.
-5. Run `streamlit run app.py` to start the dashboard!
+5. Install required dependencies:
+```bash
+pip install -r requirements.txt
+```
+6.  Run `streamlit run app.py` to start the dashboard!
