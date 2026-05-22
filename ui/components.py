@@ -37,7 +37,7 @@ def get_dynamic_cover_url(title: str, author: str) -> str:
     api_url = f"https://openlibrary.org/search.json?title={clean_title}&author={clean_author}"
     fallback = "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=150"
     try:
-        response = requests.get(api_url, timeout=0.8).json()
+        response = requests.get(api_url, timeout=4).json()
         if response.get("docs") and "cover_i" in response["docs"][0]:
             cover_id = response["docs"][0]["cover_i"]
             if cover_id and cover_id != -1:
