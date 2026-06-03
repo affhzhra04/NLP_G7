@@ -1,4 +1,7 @@
 import streamlit as st
+from dotenv import load_dotenv
+load_dotenv()
+
 from core.data_loader import load_clean_dataframe, load_vector_space
 from core.query_parser import QueryParser
 from core.engine import HybridRecommendationEngine

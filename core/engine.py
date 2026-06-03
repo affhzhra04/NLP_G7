@@ -1,6 +1,27 @@
 import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
+import os
+import google.generativeai as genai
+import time
+
+def fetch_gemini_explanation(query, title, synopsis, tone, pacing, fallback_reason):
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return fallback_reason
+        
+    genai.configure(api_key=api_key)
+    prompt = f"Query: '{query}'\nBook: '{title}'\nSynopsis: '{synopsis}'\nTask: Write exactly one brief, conversational sentence explaining why this book is a good match for the query. Output ONLY the final sentence and absolutely no other text, reasoning, or introduction."
+    
+    try:
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        response = model.generate_content(prompt)
+        return response.text.strip().replace('"', '')
+    except Exception as e:
+        print(f"Gemini API Error: {repr(e)}")
+        pass
+    
+    return fallback_reason
 
 class HybridRecommendationEngine:
     def __init__(self, df: pd.DataFrame, embeddings: np.ndarray, model):
@@ -66,7 +87,7 @@ class HybridRecommendationEngine:
             if genre_match_count > 0: reasons.append(f"Matches your '{list(target_genres)[0]}' preference")
             if tone_matched: reasons.append(f"Matches desired '{target_tone}' tone")
             if pacing_matched: reasons.append(f"Matches your '{target_pacing}' pacing preference")
-            if not reasons: reasons.append("Strong narrative plot concept alignment")
+            if not reasons: reasons.append("The plot of this book closely matches the concept you described")
             
             match_explanations.append(" • ".join(reasons[:2]))
 
@@ -90,6 +111,30 @@ class HybridRecommendationEngine:
         top_indices = final_scores.argsort()[-k:][::-1]
         results = self.df.iloc[top_indices].copy()
         results["match_confidence"] = final_scores[top_indices]
-        results["explanation"] = [match_explanations[idx] for idx in top_indices]
+        
+        # Sequential fetch AI explanations (only top 2 to save time/rate limits)
+        import time
+        generated_explanations = []
+        for i, idx in enumerate(top_indices):
+            row = self.df.iloc[idx]
+            fallback = match_explanations[idx]
+            
+            if i < 2:
+                synopsis = str(row.get("summary", ""))[:600]
+                explanation = fetch_gemini_explanation(
+                    main_input,
+                    row["title"],
+                    synopsis,
+                    row.get("tone", "unknown"),
+                    row.get("pacing", "unknown"),
+                    fallback
+                )
+                time.sleep(1) # Small delay to prevent HTTP 429 Too Many Requests
+            else:
+                explanation = fallback
+                
+            generated_explanations.append(explanation)
+            
+        results["explanation"] = generated_explanations
 
         return results

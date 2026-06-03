@@ -78,6 +78,10 @@ def render_recommendation_card(count: int, row: dict):
                 <p style="color: #94a3b8; font-size: 0.88rem; line-height: 1.5; margin: 0 0 14px 0; font-style: italic;">
                     "{synopsis_snippet}"
                 </p>
+                <div style="background-color: rgba(59, 130, 246, 0.1); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px; border-left: 3px solid #3b82f6;">
+                    <span style="font-size: 0.75rem; color: #93c5fd; font-weight: 700; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px;">💡 Why this matched</span>
+                    <span style="font-size: 0.85rem; color: #f1f5f9;">{row.get('explanation', 'Loading AI explanation...')}</span>
+                </div>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>{genre_pills}</div>
                     <span style="font-size: 0.78rem; color: #475569;">Tone: <b>{row['tone']}</b> | Pacing: <b>{row['pacing']}</b></span>

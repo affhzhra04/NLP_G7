@@ -10,4 +10,9 @@
 ```bash
 pip install -r requirements.txt
 ```
-6.  Run `streamlit run app.py` to start the dashboard!
+6. **Configure Explainable AI (Optional but Recommended):**
+   - We use the Google Gemini API to dynamically generate conversational explanations for book recommendations. 
+   - Create a `.env` file in the root directory.
+   - Open `.env` and add your free Google AI Studio key: `GEMINI_API_KEY=your_key_here`
+   - *(If no key is provided, the app will safely fall back to default rule-based explanations).*
+7.  Run `streamlit run app.py` to start the dashboard!

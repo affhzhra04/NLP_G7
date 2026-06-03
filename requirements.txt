@@ -4,3 +4,6 @@ pandas
 numpy
 sentence-transformers
 tf-keras
+requests
+google-generativeai
+python-dotenv
